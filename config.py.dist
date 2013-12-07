@@ -5,3 +5,8 @@ AZIMUT_CONFIG = '../azimut-config/'
 GESTION_ADDRESS = '<gestion_adresse>'
 
 ZABBIX_SERVER = ''
+
+MYSQL_HOST = ''
+
+MYSQL_USER = ''
+MYSQL_PASSWORD = ''

@@ -19,3 +19,6 @@ import gestion
 
 # Import zabbix tools
 import zabbix
+
+# Import agepoly's tools
+import agep
