@@ -6,18 +6,18 @@ import config
 @task
 def setup_agep_vm():
     """Setup a new agep VM [$AG:NeedKomUser][$AG:NeedSudo]"""
-    #execute(install_apache)
-    #execute(install_php)
-    #execute(create_folders)
-    #execute(upload_default_page)
-    #execute(set_user_rights)
-    #execute(configure_apache)
-    #execute(add_mysql_host)
+    execute(install_apache)
+    execute(install_php)
+    execute(create_folders)
+    execute(upload_default_page)
+    execute(set_user_rights)
+    execute(configure_apache)
+    execute(add_mysql_host)
     execute(configure_logrotate)
-    #execute(restart_apache)
+    execute(restart_apache)
 
-    #if hasattr(env, 'fab_addsudo') and env.fab_addsudo == 'True':
-    #    execute(allow_sudo_user)
+    if hasattr(env, 'fab_addsudo') and env.fab_addsudo == 'True':
+        execute(allow_sudo_user)
 
 
 @task
