@@ -72,7 +72,7 @@ def allow_sudo_user():
 
     if not hasattr(env, 'fab_komuser') or env.fab_komuser == '':
         return
-    
+
     sudo('adduser ' + env.fab_komuser + ' sudo')
 
 
@@ -91,7 +91,7 @@ def upload_default_page():
 @task
 def create_folders():
     """Create folders [$AG:NeedKomUser]"""
-    
+
     if not hasattr(env, 'fab_komuser') or env.fab_komuser == '':
         return
 
@@ -104,10 +104,11 @@ def add_mysql_host():
     """Add the mysql host"""
     append('/etc/hosts', config.MYSQL_HOST + ' mysql')
 
+
 @task
 def set_user_rights():
     """Set user rights to access everything he needs [$AG:NeedKomUser]"""
-    
+
     if not hasattr(env, 'fab_komuser') or env.fab_komuser == '':
         return
 
@@ -117,7 +118,7 @@ def set_user_rights():
 
 @task
 def setup_mysql():
-    """Setup the mysql database and user [$AG:NeedKomUser][$AG:NeedMysqlPassword][$AG:NeedSrvIp]"""
+    """Setup the mysql database and user [$AG:NeedKomUser][$AG:NeedMysqlPassword]"""
     with hide('running'):
         execute(create_mysql_database)
         execute(add_mysql_user)
@@ -131,18 +132,20 @@ def mysql_execute(sql):
     sql = sql.replace('"', r'\"')
     return run('echo "%s" | mysql --user="%s" --password="%s"' % (sql, config.MYSQL_USER, config.MYSQL_PASSWORD))
 
+
 @task
 def create_mysql_database():
     """Create a new mysql database [$AG:NeedKomUser]"""
 
     if not hasattr(env, 'fab_komuser') or env.fab_komuser == '':
         return
-    
+
     mysql_execute("CREATE DATABASE %s DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;" % (env.fab_komuser,))
+
 
 @task
 def add_mysql_user():
-    """Add mysql user [$AG:NeedKomUser][$AG:NeedMysqlPassword][$AG:NeedSrvIp]"""
+    """Add mysql user [$AG:NeedKomUser][$AG:NeedMysqlPassword]"""
 
     if not hasattr(env, 'fab_komuser') or env.fab_komuser == '':
         return
@@ -150,25 +153,21 @@ def add_mysql_user():
     if not hasattr(env, 'fab_mysqlpassword') or env.fab_mysqlpassword == '':
         return
 
-    if not hasattr(env, 'fab_srvip') or env.fab_srvip == '':
-        return
-    
-    mysql_execute("CREATE USER '%s'@'%s' IDENTIFIED BY '%s';" % (env.fab_komuser, env.fab_srvip, env.fab_mysqlpassword))
+    mysql_execute("CREATE USER '%s'@'%%' IDENTIFIED BY '%s';" % (env.fab_komuser, env.fab_mysqlpassword))
+
 
 @task
 def add_mysql_rights():
-    """Add mysql rights [$AG:NeedKomUser][$AG:NeedSrvIp]"""
+    """Add mysql rights [$AG:NeedKomUser]"""
 
     if not hasattr(env, 'fab_komuser') or env.fab_komuser == '':
         return
 
-    if not hasattr(env, 'fab_srvip') or env.fab_srvip == '':
-        return
-    
-    mysql_execute("GRANT ALL ON %s.* TO '%s'@'%s';" % (env.fab_komuser, env.fab_komuser, env.fab_srvip))
+    mysql_execute("GRANT ALL ON %s.* TO '%s'@'%%';" % (env.fab_komuser, env.fab_komuser))
+
 
 @task
 def reload_mysql_rights():
     """Reload mysql rights"""
-    
+
     mysql_execute("FLUSH PRIVILEGES;")
